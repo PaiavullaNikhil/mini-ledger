@@ -1,0 +1,10 @@
+^C:\PROJECTS\MINI-LEDGER\BUILD\CMAKEFILES\D4CD02881BE3FBFCBA257F1256C89CE7\GENERATE.STAMP.RULE
+setlocal
+"C:\Users\P NIKHIL\AppData\Local\Microsoft\WinGet\Packages\Kitware.CMake_Microsoft.Winget.Source_8wekyb3d8bbwe\cmake-4.4.3-windows-x86_64\bin\cmake.exe" -SC:/Projects/mini-ledger -BC:/Projects/mini-ledger/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Projects/mini-ledger/build/MiniLedger.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
