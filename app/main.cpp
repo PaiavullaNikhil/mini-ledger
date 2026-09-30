@@ -7,29 +7,6 @@ int main() {
 
     StorageEngine storage("data");
 
-    auto loadedAccounts = storage.loadAccounts();
-
-    if (!loadedAccounts.empty()) {
-
-        std::cout << "Loaded accounts from disk:\n\n";
-
-        for (const auto& account : loadedAccounts) {
-
-            std::cout
-                << account.getId()
-                << " | "
-                << account.getName()
-                << " | "
-                << account.getBalance().getPaise()
-                << " paise\n";
-        }
-
-        return 0;
-    }
-
-    std::cout << "No existing accounts found.\n";
-    std::cout << "Creating initial accounts...\n\n";
-
     Ledger ledger;
 
     Account cash(
@@ -72,12 +49,66 @@ int main() {
         return 1;
     }
 
+    // Save
     storage.saveAccounts(
         ledger.getAccounts()
     );
 
-    std::cout
-        << "Accounts saved successfully.\n";
+    storage.saveTransactions(
+        ledger.getTransactions()
+    );
+
+    std::cout << "Data saved.\n\n";
+
+
+    // Load
+    auto loadedAccounts =
+        storage.loadAccounts();
+
+    auto loadedTransactions =
+        storage.loadTransactions();
+
+
+    std::cout << "Loaded Accounts:\n";
+
+    for (const auto& account :
+         loadedAccounts) {
+
+        std::cout
+            << account.getId()
+            << " | "
+            << account.getName()
+            << " | "
+            << account.getBalance().getPaise()
+            << " paise\n";
+    }
+
+
+    std::cout << "\nLoaded Transactions:\n";
+
+    for (const auto& transaction :
+         loadedTransactions) {
+
+        std::cout
+            << "Transaction #"
+            << transaction.getId()
+            << " | "
+            << transaction.getDescription()
+            << '\n';
+
+        for (const auto& entry :
+             transaction.getEntries()) {
+
+            std::cout
+                << "  Account: "
+                << entry.accountId
+                << " | Debit: "
+                << entry.debit.getPaise()
+                << " | Credit: "
+                << entry.credit.getPaise()
+                << '\n';
+        }
+    }
 
     return 0;
 }

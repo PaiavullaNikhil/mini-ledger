@@ -105,3 +105,186 @@ Account Serializer::readAccount(
 
     return account;
 }
+
+void Serializer::writeTransaction(
+    std::ofstream& out,
+    const Transaction& transaction)
+    {
+    std::int32_t id = transaction.getId();
+
+    std::int32_t descriptionLength =
+        static_cast<std::int32_t>(
+            transaction.getDescription().size()
+        );
+
+    std::int32_t entryCount =
+        static_cast<std::int32_t>(
+            transaction.getEntries().size()
+        );
+
+    // Write transaction ID
+    out.write(
+        reinterpret_cast<const char*>(&id),
+        sizeof(id)
+    );
+
+    // Write description length
+    out.write(
+        reinterpret_cast<const char*>(&descriptionLength),
+        sizeof(descriptionLength)
+    );
+
+    // Write description
+    out.write(
+        transaction.getDescription().data(),
+        descriptionLength
+    );
+
+    // Write number of entries
+    out.write(
+        reinterpret_cast<const char*>(&entryCount),
+        sizeof(entryCount)
+    );
+
+    // Write every entry
+    for (const auto& entry :
+         transaction.getEntries()) {
+
+        std::int32_t accountId = entry.accountId;
+
+        std::int64_t debit =
+            entry.debit.getPaise();
+
+        std::int64_t credit =
+            entry.credit.getPaise();
+
+        out.write(
+            reinterpret_cast<const char*>(&accountId),
+            sizeof(accountId)
+        );
+
+        out.write(
+            reinterpret_cast<const char*>(&debit),
+            sizeof(debit)
+        );
+
+        out.write(
+            reinterpret_cast<const char*>(&credit),
+            sizeof(credit)
+        );
+    }
+
+    if (!out) {
+        throw std::runtime_error(
+            "Failed to write transaction"
+        );
+    }
+}
+
+Transaction Serializer::readTransaction(
+    std::ifstream& in) 
+    {
+    std::int32_t id;
+    std::int32_t descriptionLength;
+    std::int32_t entryCount;
+
+    // Read transaction ID
+    in.read(
+        reinterpret_cast<char*>(&id),
+        sizeof(id)
+    );
+
+    // Read description length
+    in.read(
+        reinterpret_cast<char*>(&descriptionLength),
+        sizeof(descriptionLength)
+    );
+
+    if (!in) {
+        throw std::runtime_error(
+            "Failed to read transaction header"
+        );
+    }
+
+    if (descriptionLength < 0 ||
+        descriptionLength > 100000) {
+
+        throw std::runtime_error(
+            "Invalid transaction description length"
+        );
+    }
+
+    std::string description(
+        descriptionLength,
+        '\0'
+    );
+
+    in.read(
+        description.data(),
+        descriptionLength
+    );
+
+    // Read number of entries
+    in.read(
+        reinterpret_cast<char*>(&entryCount),
+        sizeof(entryCount)
+    );
+
+    if (!in) {
+        throw std::runtime_error(
+            "Failed to read transaction metadata"
+        );
+    }
+
+    if (entryCount < 0 ||
+        entryCount > 100000) {
+
+        throw std::runtime_error(
+            "Invalid transaction entry count"
+        );
+    }
+
+    Transaction transaction(
+        id,
+        description
+    );
+
+    for (std::int32_t i = 0;
+         i < entryCount;
+         ++i) {
+
+        std::int32_t accountId;
+        std::int64_t debit;
+        std::int64_t credit;
+
+        in.read(
+            reinterpret_cast<char*>(&accountId),
+            sizeof(accountId)
+        );
+
+        in.read(
+            reinterpret_cast<char*>(&debit),
+            sizeof(debit)
+        );
+
+        in.read(
+            reinterpret_cast<char*>(&credit),
+            sizeof(credit)
+        );
+
+        if (!in) {
+            throw std::runtime_error(
+                "Failed to read transaction entry"
+            );
+        }
+
+        transaction.addEntry(
+            accountId,
+            Money(debit),
+            Money(credit)
+        );
+    }
+
+    return transaction;
+}
+

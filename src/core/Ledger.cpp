@@ -29,9 +29,11 @@ bool Ledger::postTransaction(
         return false;
     }
 
-    for (const auto& entry : transaction.getEntries()) {
+    for (const auto& entry :
+         transaction.getEntries()) {
 
-        Account* account = getAccount(entry.accountId);
+        Account* account =
+            getAccount(entry.accountId);
 
         if (account == nullptr) {
             return false;
@@ -45,6 +47,8 @@ bool Ledger::postTransaction(
             account->credit(entry.credit);
         }
     }
+
+    transactions.push_back(transaction);
 
     return true;
 }
@@ -74,4 +78,8 @@ std::vector<Account> Ledger::getAccounts() const {
     }
 
     return result;
+}
+
+std::vector<Transaction> Ledger::getTransactions() const {
+    return transactions;
 }

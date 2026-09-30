@@ -8,6 +8,7 @@
 class Ledger {
 private:
     std::unordered_map<int, Account> accounts;
+    std::vector<Transaction> transactions;
 
 public:
     void addAccount(const Account& account);
@@ -21,4 +22,5 @@ public:
     void printBalances() const;
 
     std::vector<Account> getAccounts() const;
+    std::vector<Transaction> getTransactions() const;
 };
