@@ -21,7 +21,9 @@ Account* Ledger::getAccount(int accountId) {
     return &it->second;
 }
 
-bool Ledger::postTransaction(const Transaction& transaction) {
+bool Ledger::postTransaction(
+    const Transaction& transaction
+) {
 
     if (!transaction.isBalanced()) {
         return false;
@@ -35,11 +37,11 @@ bool Ledger::postTransaction(const Transaction& transaction) {
             return false;
         }
 
-        if (entry.debit > 0) {
+        if (!entry.debit.isZero()) {
             account->debit(entry.debit);
         }
 
-        if (entry.credit > 0) {
+        if (!entry.credit.isZero()) {
             account->credit(entry.credit);
         }
     }
@@ -55,8 +57,21 @@ void Ledger::printBalances() const {
             << id
             << " | "
             << account.getName()
-            << " | Balance: "
-            << account.getBalance()
-            << '\n';
+            << " | "
+            << account.getBalance().getPaise()
+            << " paise\n";
     }
+}
+
+std::vector<Account> Ledger::getAccounts() const {
+
+    std::vector<Account> result;
+
+    result.reserve(accounts.size());
+
+    for (const auto& [id, account] : accounts) {
+        result.push_back(account);
+    }
+
+    return result;
 }

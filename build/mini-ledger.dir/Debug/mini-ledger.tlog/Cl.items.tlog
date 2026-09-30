@@ -1,4 +1,7 @@
 C:\Projects\mini-ledger\app\main.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\main.obj
+C:\Projects\mini-ledger\src\models\Money.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Money.obj
 C:\Projects\mini-ledger\src\models\Account.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Account.obj
 C:\Projects\mini-ledger\src\models\Transaction.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Transaction.obj
+C:\Projects\mini-ledger\src\storage\Serializer.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Serializer.obj
+C:\Projects\mini-ledger\src\storage\StorageEngine.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\StorageEngine.obj
 C:\Projects\mini-ledger\src\core\Ledger.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Ledger.obj

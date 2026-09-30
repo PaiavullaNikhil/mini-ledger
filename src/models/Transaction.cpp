@@ -1,14 +1,32 @@
 #include "models/Transaction.h"
+#include <stdexcept>
 
-Transaction::Transaction(int id, const std::string& description)
-    : id(id), description(description) {
+Transaction::Transaction(
+    int id,
+    const std::string& description
+)
+    : id(id),
+      description(description) {
 }
 
 void Transaction::addEntry(
     int accountId,
-    double debit,
-    double credit
+    Money debit,
+    Money credit
 ) {
+
+    if (!debit.isZero() && !credit.isZero()) {
+        throw std::invalid_argument(
+            "An entry cannot contain both debit and credit"
+        );
+    }
+
+    if (debit.isZero() && credit.isZero()) {
+        throw std::invalid_argument(
+            "An entry must contain either debit or credit"
+        );
+    }
+
     entries.push_back({
         accountId,
         debit,
@@ -18,8 +36,8 @@ void Transaction::addEntry(
 
 bool Transaction::isBalanced() const {
 
-    double totalDebit = 0.0;
-    double totalCredit = 0.0;
+    Money totalDebit(0);
+    Money totalCredit(0);
 
     for (const auto& entry : entries) {
         totalDebit += entry.debit;
@@ -37,6 +55,7 @@ const std::string& Transaction::getDescription() const {
     return description;
 }
 
-const std::vector<TransactionEntry>& Transaction::getEntries() const {
+const std::vector<TransactionEntry>&
+Transaction::getEntries() const {
     return entries;
 }

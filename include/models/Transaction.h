@@ -1,12 +1,14 @@
 #pragma once
 
+#include "models/Money.h"
+
 #include <string>
 #include <vector>
 
 struct TransactionEntry {
     int accountId;
-    double debit;
-    double credit;
+    Money debit;
+    Money credit;
 };
 
 class Transaction {
@@ -16,13 +18,22 @@ private:
     std::vector<TransactionEntry> entries;
 
 public:
-    Transaction(int id, const std::string& description);
+    Transaction(
+        int id,
+        const std::string& description
+    );
 
-    void addEntry(int accountId, double debit, double credit);
+    void addEntry(
+        int accountId,
+        Money debit,
+        Money credit
+    );
 
     bool isBalanced() const;
 
     int getId() const;
+
     const std::string& getDescription() const;
+
     const std::vector<TransactionEntry>& getEntries() const;
 };

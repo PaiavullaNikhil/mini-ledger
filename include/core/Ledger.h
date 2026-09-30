@@ -19,4 +19,6 @@ public:
     bool postTransaction(const Transaction& transaction);
 
     void printBalances() const;
+
+    std::vector<Account> getAccounts() const;
 };

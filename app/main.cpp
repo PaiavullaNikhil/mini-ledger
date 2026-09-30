@@ -1,43 +1,83 @@
 #include "core/Ledger.h"
+#include "storage/StorageEngine.h"
 
 #include <iostream>
 
 int main() {
 
+    StorageEngine storage("data");
+
+    auto loadedAccounts = storage.loadAccounts();
+
+    if (!loadedAccounts.empty()) {
+
+        std::cout << "Loaded accounts from disk:\n\n";
+
+        for (const auto& account : loadedAccounts) {
+
+            std::cout
+                << account.getId()
+                << " | "
+                << account.getName()
+                << " | "
+                << account.getBalance().getPaise()
+                << " paise\n";
+        }
+
+        return 0;
+    }
+
+    std::cout << "No existing accounts found.\n";
+    std::cout << "Creating initial accounts...\n\n";
+
     Ledger ledger;
 
-    Account cash(1001, "Cash");
-    Account capital(1002, "Capital");
+    Account cash(
+        1001,
+        "Cash",
+        AccountType::ASSET
+    );
+
+    Account capital(
+        1002,
+        "Capital",
+        AccountType::EQUITY
+    );
 
     ledger.addAccount(cash);
     ledger.addAccount(capital);
 
-    Transaction transaction(
+    Transaction investment(
         5001,
         "Initial capital investment"
     );
 
-    transaction.addEntry(
+    investment.addEntry(
         1001,
-        100000,
-        0
+        Money(10000000),
+        Money(0)
     );
 
-    transaction.addEntry(
+    investment.addEntry(
         1002,
-        0,
-        90000
+        Money(0),
+        Money(10000000)
     );
 
-    if (ledger.postTransaction(transaction)) {
-        std::cout << "Transaction posted successfully.\n";
-    } else {
-        std::cout << "Transaction failed.\n";
+    if (!ledger.postTransaction(investment)) {
+
+        std::cout
+            << "Failed to post transaction.\n";
+
+        return 1;
     }
 
-    std::cout << "\nAccount Balances:\n";
+    storage.saveAccounts(
+        ledger.getAccounts()
+    );
 
-    ledger.printBalances();
+    std::cout
+        << "Accounts saved successfully.\n";
 
     return 0;
 }

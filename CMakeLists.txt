@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(MiniLedger
-    VERSION 0.1.0
+    VERSION 0.2.0
     LANGUAGES CXX
 )
 
@@ -13,8 +13,12 @@ add_executable(mini-ledger
 
     app/main.cpp
 
+    src/models/Money.cpp
     src/models/Account.cpp
     src/models/Transaction.cpp
+    
+    src/storage/Serializer.cpp
+    src/storage/StorageEngine.cpp
 
     src/core/Ledger.cpp
 )
