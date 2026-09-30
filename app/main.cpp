@@ -1,114 +1,77 @@
 #include "core/Ledger.h"
 #include "storage/StorageEngine.h"
+#include "core/Inventory.h"
 
 #include <iostream>
 
 int main() {
 
-    StorageEngine storage("data");
+    Inventory inventory;
 
-    Ledger ledger;
-
-    Account cash(
-        1001,
-        "Cash",
-        AccountType::ASSET
+    // Purchase 10 laptops in Bangalore
+    inventory.purchase(
+        101,
+        1,
+        10
     );
 
-    Account capital(
-        1002,
-        "Capital",
-        AccountType::EQUITY
+    std::cout
+        << "Bangalore stock: "
+        << inventory.getStock(101, 1)
+        << '\n';
+
+    // Sell 2 laptops
+    bool sold = inventory.sell(
+        101,
+        1,
+        2
     );
 
-    ledger.addAccount(cash);
-    ledger.addAccount(capital);
+    std::cout
+        << "Sale successful: "
+        << std::boolalpha
+        << sold
+        << '\n';
 
-    Transaction investment(
-        5001,
-        "Initial capital investment"
+    std::cout
+        << "Bangalore stock: "
+        << inventory.getStock(101, 1)
+        << '\n';
+
+    // Transfer 3 laptops
+    bool transferred = inventory.transfer(
+        101,
+        1,
+        2,
+        3
     );
 
-    investment.addEntry(
-        1001,
-        Money(10000000),
-        Money(0)
+    std::cout
+        << "Transfer successful: "
+        << transferred
+        << '\n';
+
+    std::cout
+        << "Bangalore stock: "
+        << inventory.getStock(101, 1)
+        << '\n';
+
+    std::cout
+        << "Mysore stock: "
+        << inventory.getStock(101, 2)
+        << '\n';
+
+    // Try to sell more than available
+    bool failedSale = inventory.sell(
+        101,
+        1,
+        10
     );
 
-    investment.addEntry(
-        1002,
-        Money(0),
-        Money(10000000)
-    );
-
-    if (!ledger.postTransaction(investment)) {
-
-        std::cout
-            << "Failed to post transaction.\n";
-
-        return 1;
-    }
-
-    // Save
-    storage.saveAccounts(
-        ledger.getAccounts()
-    );
-
-    storage.saveTransactions(
-        ledger.getTransactions()
-    );
-
-    std::cout << "Data saved.\n\n";
-
-
-    // Load
-    auto loadedAccounts =
-        storage.loadAccounts();
-
-    auto loadedTransactions =
-        storage.loadTransactions();
-
-
-    std::cout << "Loaded Accounts:\n";
-
-    for (const auto& account :
-         loadedAccounts) {
-
-        std::cout
-            << account.getId()
-            << " | "
-            << account.getName()
-            << " | "
-            << account.getBalance().getPaise()
-            << " paise\n";
-    }
-
-
-    std::cout << "\nLoaded Transactions:\n";
-
-    for (const auto& transaction :
-         loadedTransactions) {
-
-        std::cout
-            << "Transaction #"
-            << transaction.getId()
-            << " | "
-            << transaction.getDescription()
-            << '\n';
-
-        for (const auto& entry :
-             transaction.getEntries()) {
-
-            std::cout
-                << "  Account: "
-                << entry.accountId
-                << " | Debit: "
-                << entry.debit.getPaise()
-                << " | Credit: "
-                << entry.credit.getPaise()
-                << '\n';
-        }
-    }
+    std::cout
+        << "Invalid sale successful: "
+        << failedSale
+        << '\n';
 
     return 0;
 }

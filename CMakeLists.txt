@@ -16,11 +16,15 @@ add_executable(mini-ledger
     src/models/Money.cpp
     src/models/Account.cpp
     src/models/Transaction.cpp
+    src/models/Warehouse.cpp
+    src/models/Product.cpp
+    src/models/StockMovement.cpp
     
     src/storage/Serializer.cpp
     src/storage/StorageEngine.cpp
 
     src/core/Ledger.cpp
+    src/core/Inventory.cpp
 )
 
 target_include_directories(mini-ledger
