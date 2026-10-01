@@ -368,13 +368,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Projects\mini-ledger\src\models\Money.cpp" />
     <ClCompile Include="C:\Projects\mini-ledger\src\models\Account.cpp" />
     <ClCompile Include="C:\Projects\mini-ledger\src\models\Transaction.cpp" />
-    <ClCompile Include="C:\Projects\mini-ledger\src\models\Warehouse.cpp" />
     <ClCompile Include="C:\Projects\mini-ledger\src\models\Product.cpp" />
-    <ClCompile Include="C:\Projects\mini-ledger\src\models\StockMovement.cpp" />
-    <ClCompile Include="C:\Projects\mini-ledger\src\storage\Serializer.cpp" />
-    <ClCompile Include="C:\Projects\mini-ledger\src\storage\StorageEngine.cpp" />
+    <ClCompile Include="C:\Projects\mini-ledger\src\models\Warehouse.cpp" />
     <ClCompile Include="C:\Projects\mini-ledger\src\core\Ledger.cpp" />
     <ClCompile Include="C:\Projects\mini-ledger\src\core\Inventory.cpp" />
+    <ClCompile Include="C:\Projects\mini-ledger\src\storage\Serializer.cpp" />
+    <ClCompile Include="C:\Projects\mini-ledger\src\storage\StorageEngine.cpp" />
+    <ClCompile Include="C:\Projects\mini-ledger\src\audit\AuditLog.cpp" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

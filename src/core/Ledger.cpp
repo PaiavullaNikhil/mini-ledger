@@ -1,20 +1,42 @@
 #include "core/Ledger.h"
-
+#include <string>
 #include <iostream>
 
-void Ledger::addAccount(const Account& account) {
-    accounts.emplace(account.getId(), account);
+Ledger::Ledger(
+    AuditLog *auditLog)
+    : auditLog(auditLog)
+{
 }
 
-bool Ledger::hasAccount(int accountId) const {
+void Ledger::addAccount(
+    const Account &account)
+{
+    accounts.emplace(
+        account.getId(),
+        account);
+
+    if (auditLog != nullptr)
+    {
+        auditLog->log(
+            "ACCOUNT_CREATED | ID=" +
+            std::to_string(account.getId()) +
+            " | Name=" +
+            account.getName());
+    }
+}
+
+bool Ledger::hasAccount(int accountId) const
+{
     return accounts.find(accountId) != accounts.end();
 }
 
-Account* Ledger::getAccount(int accountId) {
+Account *Ledger::getAccount(int accountId)
+{
 
     auto it = accounts.find(accountId);
 
-    if (it == accounts.end()) {
+    if (it == accounts.end())
+    {
         return nullptr;
     }
 
@@ -22,40 +44,56 @@ Account* Ledger::getAccount(int accountId) {
 }
 
 bool Ledger::postTransaction(
-    const Transaction& transaction
-) {
+    const Transaction &transaction)
+{
 
-    if (!transaction.isBalanced()) {
+    if (!transaction.isBalanced())
+    {
         return false;
     }
 
-    for (const auto& entry :
-         transaction.getEntries()) {
+    for (const auto &entry :
+         transaction.getEntries())
+    {
 
-        Account* account =
+        Account *account =
             getAccount(entry.accountId);
 
-        if (account == nullptr) {
+        if (account == nullptr)
+        {
             return false;
         }
 
-        if (!entry.debit.isZero()) {
+        if (!entry.debit.isZero())
+        {
             account->debit(entry.debit);
         }
 
-        if (!entry.credit.isZero()) {
+        if (!entry.credit.isZero())
+        {
             account->credit(entry.credit);
         }
     }
 
     transactions.push_back(transaction);
 
+    if (auditLog != nullptr)
+    {
+        auditLog->log(
+            "TRANSACTION_POSTED | ID=" +
+            std::to_string(transaction.getId()) +
+            " | " +
+            transaction.getDescription());
+    }
+
     return true;
 }
 
-void Ledger::printBalances() const {
+void Ledger::printBalances() const
+{
 
-    for (const auto& [id, account] : accounts) {
+    for (const auto &[id, account] : accounts)
+    {
 
         std::cout
             << id
@@ -67,19 +105,22 @@ void Ledger::printBalances() const {
     }
 }
 
-std::vector<Account> Ledger::getAccounts() const {
+std::vector<Account> Ledger::getAccounts() const
+{
 
     std::vector<Account> result;
 
     result.reserve(accounts.size());
 
-    for (const auto& [id, account] : accounts) {
+    for (const auto &[id, account] : accounts)
+    {
         result.push_back(account);
     }
 
     return result;
 }
 
-std::vector<Transaction> Ledger::getTransactions() const {
+std::vector<Transaction> Ledger::getTransactions() const
+{
     return transactions;
 }

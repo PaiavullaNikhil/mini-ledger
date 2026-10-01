@@ -13,13 +13,16 @@
     <ClCompile Include="C:\Projects\mini-ledger\src\models\Transaction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Projects\mini-ledger\src\models\Warehouse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Projects\mini-ledger\src\models\Product.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Projects\mini-ledger\src\models\StockMovement.cpp">
+    <ClCompile Include="C:\Projects\mini-ledger\src\models\Warehouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\mini-ledger\src\core\Ledger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\mini-ledger\src\core\Inventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Projects\mini-ledger\src\storage\Serializer.cpp">
@@ -28,10 +31,7 @@
     <ClCompile Include="C:\Projects\mini-ledger\src\storage\StorageEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Projects\mini-ledger\src\core\Ledger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Projects\mini-ledger\src\core\Inventory.cpp">
+    <ClCompile Include="C:\Projects\mini-ledger\src\audit\AuditLog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

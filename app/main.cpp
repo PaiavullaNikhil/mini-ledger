@@ -1,10 +1,51 @@
+#include "audit/AuditLog.h"
 #include "core/Inventory.h"
+#include "core/Ledger.h"
 
 #include <iostream>
 
 int main() {
 
-    Inventory inventory;
+    AuditLog auditLog(
+        "data/audit.log"
+    );
+
+    Ledger ledger(&auditLog);
+    Inventory inventory(&auditLog);
+
+    Account cash(
+        1001,
+        "Cash",
+        AccountType::ASSET
+    );
+
+    Account capital(
+        1002,
+        "Capital",
+        AccountType::EQUITY
+    );
+
+    ledger.addAccount(cash);
+    ledger.addAccount(capital);
+
+    Transaction transaction(
+        5001,
+        "Initial capital investment"
+    );
+
+    transaction.addEntry(
+        1001,
+        Money(10000000),
+        Money(0)
+    );
+
+    transaction.addEntry(
+        1002,
+        Money(0),
+        Money(10000000)
+    );
+
+    ledger.postTransaction(transaction);
 
     Product laptop(
         101,
@@ -12,24 +53,7 @@ int main() {
         Money(5000000)
     );
 
-    Product mouse(
-        102,
-        "Mouse",
-        Money(150000)
-    );
-
     inventory.addProduct(laptop);
-    inventory.addProduct(mouse);
-
-    Product* product =
-        inventory.getProduct(101);
-
-    if (product != nullptr) {
-        std::cout
-            << "Found product: "
-            << product->getName()
-            << '\n';
-    }
 
     inventory.purchase(
         101,
@@ -37,50 +61,21 @@ int main() {
         10
     );
 
-    inventory.purchase(
-        102,
-        1,
-        20
-    );
-
-    std::cout
-        << "Laptop stock: "
-        << inventory.getStock(101, 1)
-        << '\n';
-
-    std::cout
-        << "Mouse stock: "
-        << inventory.getStock(102, 1)
-        << '\n';
-
-    bool sold = inventory.sell(
+    inventory.sell(
         101,
         1,
         2
     );
 
-    std::cout
-        << "Sale successful: "
-        << std::boolalpha
-        << sold
-        << '\n';
+    inventory.transfer(
+        101,
+        1,
+        2,
+        3
+    );
 
     std::cout
-        << "Laptop stock: "
-        << inventory.getStock(101, 1)
-        << '\n';
-
-    bool invalidPurchase =
-        inventory.sell(
-            999,
-            1,
-            5
-        );
-
-    std::cout
-        << "Unknown product sale: "
-        << invalidPurchase
-        << '\n';
+        << "Operations completed.\n";
 
     return 0;
 }
