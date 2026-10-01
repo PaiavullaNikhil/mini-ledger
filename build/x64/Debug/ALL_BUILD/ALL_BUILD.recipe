@@ -5,6 +5,9 @@
       <FullPath>C:\Projects\mini-ledger\build\x64\Debug\ZERO_CHECK</FullPath>
     </ProjectOutput>
     <ProjectOutput>
+      <FullPath>C:\Projects\mini-ledger\build\benchmarks\Debug\benchmark_search.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
       <FullPath>C:\Projects\mini-ledger\build\Debug\mini-ledger.exe</FullPath>
     </ProjectOutput>
     <ProjectOutput>

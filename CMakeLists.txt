@@ -31,3 +31,5 @@ target_include_directories(mini-ledger
     PRIVATE
         ${PROJECT_SOURCE_DIR}/include
 )
+
+add_subdirectory(benchmarks)

@@ -3,6 +3,8 @@ C:\Projects\mini-ledger\src\models\Money.cpp;C:\Projects\mini-ledger\build\mini-
 C:\Projects\mini-ledger\src\models\Account.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Account.obj
 C:\Projects\mini-ledger\src\models\Transaction.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Transaction.obj
 C:\Projects\mini-ledger\src\models\Warehouse.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Warehouse.obj
+C:\Projects\mini-ledger\src\models\Product.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Product.obj
+C:\Projects\mini-ledger\src\models\StockMovement.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\StockMovement.obj
 C:\Projects\mini-ledger\src\storage\Serializer.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Serializer.obj
 C:\Projects\mini-ledger\src\storage\StorageEngine.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\StorageEngine.obj
 C:\Projects\mini-ledger\src\core\Ledger.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Ledger.obj

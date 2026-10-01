@@ -174,6 +174,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
+    <ProjectReference Include="C:\Projects\mini-ledger\build\benchmarks\benchmark_search.vcxproj">
+      <Project>{65BD18E5-52CB-3AC2-8954-BFADBDCB540F}</Project>
+      <Name>benchmark_search</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Projects\mini-ledger\build\mini-ledger.vcxproj">
       <Project>{D1F1692F-21D3-305F-8921-A5FEFDA1CF23}</Project>
       <Name>mini-ledger</Name>

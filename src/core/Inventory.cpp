@@ -1,11 +1,33 @@
 #include "core/Inventory.h"
 
+void Inventory::addProduct(
+    const Product& product
+) {
+    products.insert(
+        product.getId(),
+        product
+    );
+}
+
+Product* Inventory::getProduct(
+    int productId
+) {
+    return products.find(productId);
+}
+
+bool Inventory::hasProduct(
+    int productId
+) const {
+    return products.contains(productId);
+}
+
 void Inventory::purchase(
     int productId,
     int warehouseId,
     int quantity
 ) {
-    if (quantity <= 0) {
+    if (!hasProduct(productId) ||
+        quantity <= 0) {
         return;
     }
 
@@ -17,7 +39,8 @@ bool Inventory::sell(
     int warehouseId,
     int quantity
 ) {
-    if (quantity <= 0) {
+    if (!hasProduct(productId) ||
+        quantity <= 0) {
         return false;
     }
 
@@ -39,7 +62,8 @@ bool Inventory::transfer(
     int toWarehouseId,
     int quantity
 ) {
-    if (quantity <= 0) {
+    if (!hasProduct(productId) ||
+        quantity <= 0) {
         return false;
     }
 
@@ -51,7 +75,6 @@ bool Inventory::transfer(
     }
 
     stock[fromWarehouseId][productId] -= quantity;
-
     stock[toWarehouseId][productId] += quantity;
 
     return true;

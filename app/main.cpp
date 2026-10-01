@@ -1,5 +1,3 @@
-#include "core/Ledger.h"
-#include "storage/StorageEngine.h"
 #include "core/Inventory.h"
 
 #include <iostream>
@@ -8,19 +6,53 @@ int main() {
 
     Inventory inventory;
 
-    // Purchase 10 laptops in Bangalore
+    Product laptop(
+        101,
+        "Laptop",
+        Money(5000000)
+    );
+
+    Product mouse(
+        102,
+        "Mouse",
+        Money(150000)
+    );
+
+    inventory.addProduct(laptop);
+    inventory.addProduct(mouse);
+
+    Product* product =
+        inventory.getProduct(101);
+
+    if (product != nullptr) {
+        std::cout
+            << "Found product: "
+            << product->getName()
+            << '\n';
+    }
+
     inventory.purchase(
         101,
         1,
         10
     );
 
+    inventory.purchase(
+        102,
+        1,
+        20
+    );
+
     std::cout
-        << "Bangalore stock: "
+        << "Laptop stock: "
         << inventory.getStock(101, 1)
         << '\n';
 
-    // Sell 2 laptops
+    std::cout
+        << "Mouse stock: "
+        << inventory.getStock(102, 1)
+        << '\n';
+
     bool sold = inventory.sell(
         101,
         1,
@@ -34,43 +66,20 @@ int main() {
         << '\n';
 
     std::cout
-        << "Bangalore stock: "
+        << "Laptop stock: "
         << inventory.getStock(101, 1)
         << '\n';
 
-    // Transfer 3 laptops
-    bool transferred = inventory.transfer(
-        101,
-        1,
-        2,
-        3
-    );
+    bool invalidPurchase =
+        inventory.sell(
+            999,
+            1,
+            5
+        );
 
     std::cout
-        << "Transfer successful: "
-        << transferred
-        << '\n';
-
-    std::cout
-        << "Bangalore stock: "
-        << inventory.getStock(101, 1)
-        << '\n';
-
-    std::cout
-        << "Mysore stock: "
-        << inventory.getStock(101, 2)
-        << '\n';
-
-    // Try to sell more than available
-    bool failedSale = inventory.sell(
-        101,
-        1,
-        10
-    );
-
-    std::cout
-        << "Invalid sale successful: "
-        << failedSale
+        << "Unknown product sale: "
+        << invalidPurchase
         << '\n';
 
     return 0;

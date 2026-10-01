@@ -16,6 +16,12 @@
     <ClCompile Include="C:\Projects\mini-ledger\src\models\Warehouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Projects\mini-ledger\src\models\Product.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Projects\mini-ledger\src\models\StockMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Projects\mini-ledger\src\storage\Serializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

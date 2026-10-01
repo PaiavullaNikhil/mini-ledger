@@ -3,6 +3,7 @@
 #include "models/Product.h"
 #include "models/Warehouse.h"
 #include "models/StockMovement.h"
+#include "storage/Index.h"
 
 #include <unordered_map>
 
@@ -14,7 +15,16 @@ private:
         std::unordered_map<int, int>
     > stock;
 
+    Index<int, Product> products;
+
 public:
+
+    void addProduct(const Product& product);
+
+    Product* getProduct(int productId);
+
+    bool hasProduct(int productId) const;
+
     void purchase(
         int productId,
         int warehouseId,
