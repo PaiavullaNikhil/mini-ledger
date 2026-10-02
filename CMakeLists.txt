@@ -25,6 +25,8 @@ add_executable(mini-ledger
     src/storage/StorageEngine.cpp
 
     src/audit/AuditLog.cpp
+
+    src/reports/ReportEngine.cpp
 )
 
 target_include_directories(mini-ledger

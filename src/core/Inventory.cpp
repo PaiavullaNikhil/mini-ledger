@@ -20,6 +20,11 @@ Product *Inventory::getProduct(
     return products.find(productId);
 }
 
+std::vector<Product> Inventory::getProducts() const
+{
+    return products.values();
+}
+
 bool Inventory::hasProduct(
     int productId) const
 {
@@ -32,6 +37,7 @@ void Inventory::purchase(
     int quantity)
 {
     if (!hasProduct(productId) ||
+        !hasWarehouse(warehouseId) ||
         quantity <= 0)
     {
         return;
@@ -57,6 +63,7 @@ bool Inventory::sell(
     int quantity)
 {
     if (!hasProduct(productId) ||
+        !hasWarehouse(warehouseId) ||
         quantity <= 0)
     {
         return false;
@@ -93,6 +100,8 @@ bool Inventory::transfer(
     int quantity)
 {
     if (!hasProduct(productId) ||
+        !hasWarehouse(fromWarehouseId) ||
+        !hasWarehouse(toWarehouseId) ||
         quantity <= 0)
     {
         return false;
@@ -146,4 +155,29 @@ int Inventory::getStock(
     }
 
     return productIt->second;
+}
+
+void Inventory::addWarehouse(
+    const Warehouse &warehouse)
+{
+    warehouses.insert(
+        warehouse.getId(),
+        warehouse);
+}
+
+Warehouse *Inventory::getWarehouse(
+    int warehouseId)
+{
+    return warehouses.find(warehouseId);
+}
+
+bool Inventory::hasWarehouse(
+    int warehouseId) const
+{
+    return warehouses.contains(warehouseId);
+}
+
+std::vector<Warehouse> Inventory::getWarehouses() const
+{
+    return warehouses.values();
 }

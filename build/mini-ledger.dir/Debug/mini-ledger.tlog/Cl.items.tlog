@@ -9,3 +9,4 @@ C:\Projects\mini-ledger\src\core\Inventory.cpp;C:\Projects\mini-ledger\build\min
 C:\Projects\mini-ledger\src\storage\Serializer.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\Serializer.obj
 C:\Projects\mini-ledger\src\storage\StorageEngine.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\StorageEngine.obj
 C:\Projects\mini-ledger\src\audit\AuditLog.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\AuditLog.obj
+C:\Projects\mini-ledger\src\reports\ReportEngine.cpp;C:\Projects\mini-ledger\build\mini-ledger.dir\Debug\ReportEngine.obj

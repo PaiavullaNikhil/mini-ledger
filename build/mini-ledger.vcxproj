@@ -375,6 +375,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Projects\mini-ledger\src\storage\Serializer.cpp" />
     <ClCompile Include="C:\Projects\mini-ledger\src\storage\StorageEngine.cpp" />
     <ClCompile Include="C:\Projects\mini-ledger\src\audit\AuditLog.cpp" />
+    <ClCompile Include="C:\Projects\mini-ledger\src\reports\ReportEngine.cpp" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

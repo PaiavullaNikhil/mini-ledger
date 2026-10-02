@@ -34,6 +34,9 @@
     <ClCompile Include="C:\Projects\mini-ledger\src\audit\AuditLog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Projects\mini-ledger\src\reports\ReportEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Projects\mini-ledger\CMakeLists.txt" />

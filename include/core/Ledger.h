@@ -24,6 +24,8 @@ public:
 
     Account* getAccount(int accountId);
 
+    const Account* getAccount(int accountId) const;
+
     bool postTransaction(
         const Transaction& transaction
     );

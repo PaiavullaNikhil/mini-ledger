@@ -43,6 +43,18 @@ Account *Ledger::getAccount(int accountId)
     return &it->second;
 }
 
+const Account* Ledger::getAccount(
+    int accountId
+) const {
+    auto it = accounts.find(accountId);
+
+    if (it == accounts.end()) {
+        return nullptr;
+    }
+
+    return &it->second;
+}
+
 bool Ledger::postTransaction(
     const Transaction &transaction)
 {
