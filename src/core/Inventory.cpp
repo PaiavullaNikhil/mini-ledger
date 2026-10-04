@@ -1,4 +1,6 @@
 #include "core/Inventory.h"
+#include <mutex>
+#include <string>
 
 Inventory::Inventory(
     AuditLog *auditLog)
@@ -9,6 +11,8 @@ Inventory::Inventory(
 void Inventory::addProduct(
     const Product &product)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     products.insert(
         product.getId(),
         product);
@@ -17,17 +21,23 @@ void Inventory::addProduct(
 Product *Inventory::getProduct(
     int productId)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     return products.find(productId);
 }
 
 std::vector<Product> Inventory::getProducts() const
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     return products.values();
 }
 
 bool Inventory::hasProduct(
     int productId) const
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     return products.contains(productId);
 }
 
@@ -36,8 +46,10 @@ void Inventory::purchase(
     int warehouseId,
     int quantity)
 {
-    if (!hasProduct(productId) ||
-        !hasWarehouse(warehouseId) ||
+    std::lock_guard<std::mutex> lock(mutex);
+
+    if (!hasProductUnlocked(productId) ||
+        !hasWarehouseUnlocked(warehouseId) ||
         quantity <= 0)
     {
         return;
@@ -62,15 +74,19 @@ bool Inventory::sell(
     int warehouseId,
     int quantity)
 {
-    if (!hasProduct(productId) ||
-        !hasWarehouse(warehouseId) ||
+    std::lock_guard<std::mutex> lock(mutex);
+
+    if (!hasProductUnlocked(productId) ||
+        !hasWarehouseUnlocked(warehouseId) ||
         quantity <= 0)
     {
         return false;
     }
 
     int currentStock =
-        getStock(productId, warehouseId);
+        getStockUnlocked(
+            productId,
+            warehouseId);
 
     if (currentStock < quantity)
     {
@@ -99,16 +115,20 @@ bool Inventory::transfer(
     int toWarehouseId,
     int quantity)
 {
-    if (!hasProduct(productId) ||
-        !hasWarehouse(fromWarehouseId) ||
-        !hasWarehouse(toWarehouseId) ||
+    std::lock_guard<std::mutex> lock(mutex);
+
+    if (!hasProductUnlocked(productId) ||
+        !hasWarehouseUnlocked(fromWarehouseId) ||
+        !hasWarehouseUnlocked(toWarehouseId) ||
         quantity <= 0)
     {
         return false;
     }
 
     int currentStock =
-        getStock(productId, fromWarehouseId);
+        getStockUnlocked(
+            productId,
+            fromWarehouseId);
 
     if (currentStock < quantity)
     {
@@ -138,6 +158,62 @@ int Inventory::getStock(
     int productId,
     int warehouseId) const
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
+    return getStockUnlocked(
+        productId,
+        warehouseId);
+}
+
+void Inventory::addWarehouse(
+    const Warehouse &warehouse)
+{
+    std::lock_guard<std::mutex> lock(mutex);
+
+    warehouses.insert(
+        warehouse.getId(),
+        warehouse);
+}
+
+Warehouse *Inventory::getWarehouse(
+    int warehouseId)
+{
+    std::lock_guard<std::mutex> lock(mutex);
+
+    return warehouses.find(warehouseId);
+}
+
+bool Inventory::hasWarehouse(
+    int warehouseId) const
+{
+    std::lock_guard<std::mutex> lock(mutex);
+
+    return hasWarehouseUnlocked(warehouseId);
+}
+
+std::vector<Warehouse> Inventory::getWarehouses() const
+{
+    std::lock_guard<std::mutex> lock(mutex);
+
+    return warehouses.values();
+}
+
+bool Inventory::hasProductUnlocked(
+    int productId) const
+{
+    return products.contains(productId);
+}
+
+bool Inventory::hasWarehouseUnlocked(
+    int warehouseId) const
+{
+    return warehouses.contains(warehouseId);
+}
+
+int Inventory::getStockUnlocked(
+    int productId,
+    int warehouseId) const
+{
     auto warehouseIt =
         stock.find(warehouseId);
 
@@ -155,29 +231,4 @@ int Inventory::getStock(
     }
 
     return productIt->second;
-}
-
-void Inventory::addWarehouse(
-    const Warehouse &warehouse)
-{
-    warehouses.insert(
-        warehouse.getId(),
-        warehouse);
-}
-
-Warehouse *Inventory::getWarehouse(
-    int warehouseId)
-{
-    return warehouses.find(warehouseId);
-}
-
-bool Inventory::hasWarehouse(
-    int warehouseId) const
-{
-    return warehouses.contains(warehouseId);
-}
-
-std::vector<Warehouse> Inventory::getWarehouses() const
-{
-    return warehouses.values();
 }

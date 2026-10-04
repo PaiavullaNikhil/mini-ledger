@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/Projects/mini-ledger/build/cmake_install.cmake",
-		"C:/Projects/mini-ledger/build/benchmarks/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

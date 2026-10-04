@@ -1,4 +1,0 @@
-C:/Projects/mini-ledger/build/CMakeFiles/mini-ledger.dir
-C:/Projects/mini-ledger/build/CMakeFiles/ALL_BUILD.dir
-C:/Projects/mini-ledger/build/CMakeFiles/ZERO_CHECK.dir
-C:/Projects/mini-ledger/build/benchmarks/CMakeFiles/benchmark_search.dir

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include "audit/AuditLog.h"
 #include "models/Account.h"
 #include "models/Transaction.h"
@@ -16,6 +18,9 @@ private:
     std::vector<Transaction> transactions;
     AuditLog *auditLog;
     WAL *wal;
+    mutable std::mutex mutex;
+    bool hasAccountUnlocked(int accountId) const;
+    Account *getAccountUnlocked(int accountId);
 
 public:
     explicit Ledger(AuditLog *auditLog = nullptr, WAL *wal = nullptr);

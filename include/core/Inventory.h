@@ -8,6 +8,7 @@
 
 #include <unordered_map>
 #include <vector>
+#include <mutex>
 
 class Inventory
 {
@@ -19,6 +20,7 @@ private:
     Index<int, Warehouse> warehouses;
 
     AuditLog *auditLog;
+    mutable std::mutex mutex;
 
 public:
     explicit Inventory(
@@ -32,11 +34,11 @@ public:
 
     bool hasProduct(int productId) const;
 
-    void purchase(int productId,int warehouseId,int quantity);
+    void purchase(int productId, int warehouseId, int quantity);
 
-    bool sell(int productId,int warehouseId,int quantity);
+    bool sell(int productId, int warehouseId, int quantity);
 
-    bool transfer(int productId,int fromWarehouseId,int toWarehouseId,int quantity);
+    bool transfer(int productId, int fromWarehouseId, int toWarehouseId, int quantity);
 
     int getStock(int productId, int warehouseId) const;
 
@@ -47,4 +49,12 @@ public:
     bool hasWarehouse(int warehouseId) const;
 
     std::vector<Warehouse> getWarehouses() const;
+
+    bool hasProductUnlocked(int productId) const;
+
+    bool hasWarehouseUnlocked(int warehouseId) const;
+
+    int getStockUnlocked(
+        int productId,
+        int warehouseId) const;
 };

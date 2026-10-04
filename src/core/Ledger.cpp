@@ -12,7 +12,9 @@ Ledger::Ledger(
 
 void Ledger::addAccount(
     const Account &account)
-{
+{   
+    std::lock_guard<std::mutex> lock(mutex);
+
     accounts.emplace(
         account.getId(),
         account);
@@ -29,25 +31,23 @@ void Ledger::addAccount(
 
 bool Ledger::hasAccount(int accountId) const
 {
-    return accounts.find(accountId) != accounts.end();
+    std::lock_guard<std::mutex> lock(mutex);
+
+    return hasAccountUnlocked(accountId);
 }
 
 Account *Ledger::getAccount(int accountId)
 {
+    std::lock_guard<std::mutex> lock(mutex);
 
-    auto it = accounts.find(accountId);
-
-    if (it == accounts.end())
-    {
-        return nullptr;
-    }
-
-    return &it->second;
+    return getAccountUnlocked(accountId);
 }
 
 const Account *Ledger::getAccount(
     int accountId) const
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     auto it = accounts.find(accountId);
 
     if (it == accounts.end())
@@ -61,6 +61,8 @@ const Account *Ledger::getAccount(
 bool Ledger::postTransaction(
     const Transaction &transaction)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (!transaction.isBalanced())
     {
         return false;
@@ -69,7 +71,7 @@ bool Ledger::postTransaction(
     for (const auto &entry :
          transaction.getEntries())
     {
-        if (!hasAccount(entry.accountId))
+        if (!hasAccountUnlocked(entry.accountId))
         {
             return false;
         }
@@ -84,7 +86,7 @@ bool Ledger::postTransaction(
          transaction.getEntries())
     {
         Account *account =
-            getAccount(entry.accountId);
+            getAccountUnlocked(entry.accountId);
 
         if (!entry.debit.isZero())
         {
@@ -113,6 +115,7 @@ bool Ledger::postTransaction(
 
 void Ledger::printBalances() const
 {
+    std::lock_guard<std::mutex> lock(mutex);
 
     for (const auto &[id, account] : accounts)
     {
@@ -129,6 +132,7 @@ void Ledger::printBalances() const
 
 std::vector<Account> Ledger::getAccounts() const
 {
+    std::lock_guard<std::mutex> lock(mutex);
 
     std::vector<Account> result;
 
@@ -144,11 +148,15 @@ std::vector<Account> Ledger::getAccounts() const
 
 std::vector<Transaction> Ledger::getTransactions() const
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     return transactions;
 }
 
 void Ledger::recover()
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (wal == nullptr)
     {
         return;
@@ -183,7 +191,7 @@ void Ledger::recover()
         for (const auto &entry :
              transaction.getEntries())
         {
-            if (!hasAccount(entry.accountId))
+            if (!hasAccountUnlocked(entry.accountId))
             {
                 valid = false;
                 break;
@@ -199,7 +207,7 @@ void Ledger::recover()
              transaction.getEntries())
         {
             Account *account =
-                getAccount(entry.accountId);
+                getAccountUnlocked(entry.accountId);
 
             if (!entry.debit.isZero())
             {
@@ -219,6 +227,8 @@ void Ledger::recover()
 void Ledger::loadAccounts(
     const std::vector<Account> &loadedAccounts)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     for (const auto &account :
          loadedAccounts)
     {
@@ -231,6 +241,26 @@ void Ledger::loadAccounts(
 void Ledger::loadTransactions(
     const std::vector<Transaction> &
         loadedTransactions)
-{
+{   
+    std::lock_guard<std::mutex> lock(mutex);
     transactions = loadedTransactions;
+}
+
+bool Ledger::hasAccountUnlocked(
+    int accountId) const
+{
+    return accounts.find(accountId) != accounts.end();
+}
+
+Account *Ledger::getAccountUnlocked(
+    int accountId)
+{
+    auto it = accounts.find(accountId);
+
+    if (it == accounts.end())
+    {
+        return nullptr;
+    }
+
+    return &it->second;
 }

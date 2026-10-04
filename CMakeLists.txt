@@ -36,3 +36,9 @@ target_include_directories(mini-ledger
 )
 
 add_subdirectory(benchmarks)
+
+include(CTest)
+
+enable_testing()
+
+add_subdirectory(tests)
