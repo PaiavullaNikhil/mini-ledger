@@ -8,171 +8,197 @@
 namespace fs = std::filesystem;
 
 StorageEngine::StorageEngine(
-    const std::string& dataDirectory
-)
-    : dataDirectory(dataDirectory) {
+    const std::string &dataDirectory)
+    : dataDirectory(dataDirectory)
+{
 
     fs::create_directories(dataDirectory);
 }
 
 void StorageEngine::saveAccounts(
-    const std::vector<Account>& accounts
-) {
+    const std::vector<Account> &accounts)
+{
     const std::string filePath =
         dataDirectory + "/accounts.dat";
 
-    std::ofstream out(
-        filePath,
-        std::ios::binary |
-        std::ios::trunc
-    );
+    const std::string tempPath =
+        dataDirectory + "/accounts.dat.tmp";
 
-    if (!out) {
+    std::ofstream out(
+        tempPath,
+        std::ios::binary |
+            std::ios::trunc);
+
+    if (!out)
+    {
         throw std::runtime_error(
-            "Unable to open accounts.dat for writing"
-        );
+            "Unable to open temporary accounts file");
     }
 
     std::int32_t count =
-        static_cast<std::int32_t>(accounts.size());
+        static_cast<std::int32_t>(
+            accounts.size());
 
     out.write(
-        reinterpret_cast<const char*>(&count),
-        sizeof(count)
-    );
+        reinterpret_cast<const char *>(&count),
+        sizeof(count));
 
-    for (const auto& account : accounts) {
-
+    for (const auto &account : accounts)
+    {
         Serializer::writeAccount(
             out,
-            account
-        );
+            account);
     }
+
+    if (!out)
+    {
+        throw std::runtime_error(
+            "Failed to write temporary accounts file");
+    }
+
+    out.close();
+
+    if (fs::exists(filePath))
+    {
+        fs::remove(filePath);
+    }
+
+    fs::rename(tempPath,filePath);
 }
 
 std::vector<Account>
-StorageEngine::loadAccounts() const {
+StorageEngine::loadAccounts() const
+{
 
     const std::string filePath =
         dataDirectory + "/accounts.dat";
 
     std::ifstream in(
         filePath,
-        std::ios::binary
-    );
+        std::ios::binary);
 
-    if (!in) {
+    if (!in)
+    {
         return {};
     }
 
     std::int32_t count;
 
     in.read(
-        reinterpret_cast<char*>(&count),
-        sizeof(count)
-    );
+        reinterpret_cast<char *>(&count),
+        sizeof(count));
 
-    if (!in) {
+    if (!in)
+    {
         throw std::runtime_error(
-            "Unable to read account count"
-        );
+            "Unable to read account count");
     }
 
-    if (count < 0 || count > 10000000) {
+    if (count < 0 || count > 10000000)
+    {
         throw std::runtime_error(
-            "Invalid account count"
-        );
+            "Invalid account count");
     }
 
     std::vector<Account> accounts;
     accounts.reserve(count);
 
-    for (std::int32_t i = 0; i < count; ++i) {
+    for (std::int32_t i = 0; i < count; ++i)
+    {
 
         accounts.push_back(
-            Serializer::readAccount(in)
-        );
+            Serializer::readAccount(in));
     }
 
     return accounts;
 }
 
 void StorageEngine::saveTransactions(
-    const std::vector<Transaction>& transactions
-) {
+    const std::vector<Transaction> &transactions)
+{
     const std::string filePath =
         dataDirectory + "/transactions.dat";
 
-    std::ofstream out(
-        filePath,
-        std::ios::binary |
-        std::ios::trunc
-    );
+    const std::string tempPath =
+        dataDirectory + "/transactions.dat.tmp";
 
-    if (!out) {
+    std::ofstream out(
+        tempPath,
+        std::ios::binary |
+            std::ios::trunc);
+
+    if (!out)
+    {
         throw std::runtime_error(
-            "Unable to open transactions.dat for writing"
-        );
+            "Unable to open temporary transactions file");
     }
 
     std::int32_t count =
         static_cast<std::int32_t>(
-            transactions.size()
-        );
+            transactions.size());
 
     out.write(
-        reinterpret_cast<const char*>(&count),
-        sizeof(count)
-    );
+        reinterpret_cast<const char *>(&count),
+        sizeof(count));
 
-    for (const auto& transaction :
-         transactions) {
-
+    for (const auto &transaction :
+         transactions)
+    {
         Serializer::writeTransaction(
             out,
-            transaction
-        );
+            transaction);
     }
 
-    if (!out) {
+    if (!out)
+    {
         throw std::runtime_error(
-            "Failed to save transactions"
-        );
+            "Failed to write temporary transactions file");
     }
+
+    out.close();
+
+    if (fs::exists(filePath))
+    {
+        fs::remove(filePath);
+    }
+
+    fs::rename(
+        tempPath,
+        filePath);
 }
 
 std::vector<Transaction>
-StorageEngine::loadTransactions() const {
+StorageEngine::loadTransactions() const
+{
 
     const std::string filePath =
         dataDirectory + "/transactions.dat";
 
     std::ifstream in(
         filePath,
-        std::ios::binary
-    );
+        std::ios::binary);
 
-    if (!in) {
+    if (!in)
+    {
         return {};
     }
 
     std::int32_t count;
 
     in.read(
-        reinterpret_cast<char*>(&count),
-        sizeof(count)
-    );
+        reinterpret_cast<char *>(&count),
+        sizeof(count));
 
-    if (!in) {
+    if (!in)
+    {
         throw std::runtime_error(
-            "Unable to read transaction count"
-        );
+            "Unable to read transaction count");
     }
 
-    if (count < 0 || count > 10000000) {
+    if (count < 0 || count > 10000000)
+    {
         throw std::runtime_error(
-            "Invalid transaction count"
-        );
+            "Invalid transaction count");
     }
 
     std::vector<Transaction> transactions;
@@ -181,11 +207,11 @@ StorageEngine::loadTransactions() const {
 
     for (std::int32_t i = 0;
          i < count;
-         ++i) {
+         ++i)
+    {
 
         transactions.push_back(
-            Serializer::readTransaction(in)
-        );
+            Serializer::readTransaction(in));
     }
 
     return transactions;

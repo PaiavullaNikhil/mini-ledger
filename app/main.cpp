@@ -6,157 +6,191 @@
 #include "models/Warehouse.h"
 #include "models/Transaction.h"
 #include "reports/ReportEngine.h"
+#include "storage/StorageEngine.h"
+#include "storage/WAL.h"
+
+#include <iostream>
 
 int main()
 {
-    AuditLog auditLog("data/audit.log");
+    StorageEngine storage("data");
 
-    Ledger ledger(&auditLog);
-    Inventory inventory(&auditLog);
+    AuditLog auditLog(
+        "data/audit.log");
 
-    Account cash(
-        1001,
-        "Cash",
-        AccountType::ASSET
-    );
+    WAL wal(
+        "data/wal.log");
 
-    Account capital(
-        1002,
-        "Capital",
-        AccountType::EQUITY
-    );
+    Ledger ledger(
+        &auditLog,
+        &wal);
 
-    Account sales(
-        1003,
-        "Sales",
-        AccountType::REVENUE
-    );
+    std::vector<Account> storedAccounts =
+        storage.loadAccounts();
 
-    Account salary(
-        1004,
-        "Salary Expense",
-        AccountType::EXPENSE
-    );
+    std::vector<Transaction> storedTransactions =
+        storage.loadTransactions();
 
-    ledger.addAccount(cash);
-    ledger.addAccount(capital);
-    ledger.addAccount(sales);
-    ledger.addAccount(salary);
+    if (storedAccounts.empty())
+    {
+        Account cash(
+            1001,
+            "Cash",
+            AccountType::ASSET);
 
-    Transaction investment(
-        5001,
-        "Initial capital"
-    );
+        Account capital(
+            1002,
+            "Capital",
+            AccountType::EQUITY);
 
-    investment.addEntry(
-        1001,
-        Money(10000000),
-        Money(0)
-    );
+        Account sales(
+            1003,
+            "Sales",
+            AccountType::REVENUE);
 
-    investment.addEntry(
-        1002,
-        Money(0),
-        Money(10000000)
-    );
+        Account salary(
+            1004,
+            "Salary Expense",
+            AccountType::EXPENSE);
 
-    ledger.postTransaction(investment);
+        ledger.addAccount(cash);
+        ledger.addAccount(capital);
+        ledger.addAccount(sales);
+        ledger.addAccount(salary);
 
-    Transaction sale(
-        5002,
-        "Cash sale"
-    );
+        Transaction investment(
+            5001,
+            "Initial capital");
 
-    sale.addEntry(
-        1001,
-        Money(2000000),
-        Money(0)
-    );
+        investment.addEntry(
+            1001,
+            Money(10000000),
+            Money(0));
 
-    sale.addEntry(
-        1003,
-        Money(0),
-        Money(2000000)
-    );
+        investment.addEntry(
+            1002,
+            Money(0),
+            Money(10000000));
 
-    ledger.postTransaction(sale);
+        ledger.postTransaction(
+            investment);
 
-    Transaction salaryPayment(
-        5003,
-        "Salary payment"
-    );
+        Transaction sale(
+            5002,
+            "Cash sale");
 
-    salaryPayment.addEntry(
-        1004,
-        Money(500000),
-        Money(0)
-    );
+        sale.addEntry(
+            1001,
+            Money(2000000),
+            Money(0));
 
-    salaryPayment.addEntry(
-        1001,
-        Money(0),
-        Money(500000)
-    );
+        sale.addEntry(
+            1003,
+            Money(0),
+            Money(2000000));
 
-    ledger.postTransaction(salaryPayment);
+        ledger.postTransaction(
+            sale);
+
+        Transaction salaryPayment(
+            5003,
+            "Salary payment");
+
+        salaryPayment.addEntry(
+            1004,
+            Money(500000),
+            Money(0));
+
+        salaryPayment.addEntry(
+            1001,
+            Money(0),
+            Money(500000));
+
+        ledger.postTransaction(
+            salaryPayment);
+
+        storage.saveAccounts(
+            ledger.getAccounts());
+
+        storage.saveTransactions(
+            ledger.getTransactions());
+    }
+    else
+    {
+        ledger.loadAccounts(
+            storedAccounts);
+
+        ledger.loadTransactions(
+            storedTransactions);
+
+        ledger.recover();
+
+        storage.saveAccounts(
+            ledger.getAccounts());
+
+        storage.saveTransactions(
+            ledger.getTransactions());
+
+        wal.clear();
+    }
+
+    Inventory inventory(
+        &auditLog);
 
     Product laptop(
         101,
         "Laptop",
-        Money(5000000)
-    );
+        Money(5000000));
 
     Product mouse(
         102,
         "Mouse",
-        Money(150000)
-    );
+        Money(150000));
 
     Warehouse bangalore(
         1,
-        "Bangalore"
-    );
+        "Bangalore");
 
     Warehouse mysore(
         2,
-        "Mysore"
-    );
+        "Mysore");
 
-    inventory.addProduct(laptop);
-    inventory.addProduct(mouse);
+    inventory.addProduct(
+        laptop);
 
-    inventory.addWarehouse(bangalore);
-    inventory.addWarehouse(mysore);
+    inventory.addProduct(
+        mouse);
+
+    inventory.addWarehouse(
+        bangalore);
+
+    inventory.addWarehouse(
+        mysore);
 
     inventory.purchase(
         101,
         1,
-        10
-    );
+        10);
 
     inventory.sell(
         101,
         1,
-        2
-    );
+        2);
 
     inventory.transfer(
         101,
         1,
         2,
-        3
-    );
+        3);
 
     inventory.purchase(
         102,
         1,
-        20
-    );
+        20);
 
     ReportEngine reports(
         ledger,
-        inventory
-    );
+        inventory);
 
     reports.printTrialBalance();
 
@@ -164,7 +198,8 @@ int main()
 
     reports.printBalanceSheet();
 
-    reports.printAccountLedger(1001);
+    reports.printAccountLedger(
+        1001);
 
     reports.printInventoryReport();
 

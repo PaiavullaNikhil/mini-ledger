@@ -23,6 +23,7 @@ add_executable(mini-ledger
 
     src/storage/Serializer.cpp
     src/storage/StorageEngine.cpp
+    src/storage/WAL.cpp
 
     src/audit/AuditLog.cpp
 
