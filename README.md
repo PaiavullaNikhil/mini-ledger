@@ -424,103 +424,23 @@ using one million products.
 
 The indexed lookup is backed by `std::unordered_map`.
 
-### Storage Benchmark
+### Results
 
-The storage benchmark was run with:
+Measured in a local Release build. Timings depend on hardware and runtime conditions; these values are a single-run baseline.
 
-```text
-10,000 accounts
-10,000 transactions
-```
+| Benchmark | Workload | Result |
+|---|---|---:|
+| Linear search | 1,000,000 products | 5,200 microseconds |
+| Indexed search | 1,000,000 products | 1 microsecond |
+| Transaction processing | 10,000 transactions | 9 ms (about 1.11 million transactions/second) |
+| Account save | 10,000 accounts | 8 ms |
+| Account load | 10,000 accounts | 21 ms |
+| Transaction save | 10,000 transactions | 15 ms |
+| Transaction load | 10,000 transactions | 27 ms |
 
-Measured results:
+Both search methods found the target product. The ledger stored all 10,000 transactions, and storage loaded all 10,000 accounts and transactions.
 
-| Operation | Time |
-|---|---:|
-| Save 10,000 accounts | 15 ms |
-| Load 10,000 accounts | 58 ms |
-| Save 10,000 transactions | 35 ms |
-| Load 10,000 transactions | 98 ms |
-
-The benchmark also verified that all records were loaded:
-
-```text
-Loaded accounts: 10000
-Loaded transactions: 10000
-```
-
-Benchmark results are hardware and environment dependent and should be treated as a baseline rather than an absolute performance guarantee.
-
----
-
-## Project Structure
-
-```text
-mini-ledger/
-│
-├── CMakeLists.txt
-├── README.md
-├── .gitignore
-├── LICENSE
-│
-├── include/
-│   ├── models/
-│   │   ├── Account.h
-│   │   ├── AccountType.h
-│   │   ├── Money.h
-│   │   ├── Transaction.h
-│   │   ├── Product.h
-│   │   ├── Warehouse.h
-│   │   └── StockMovement.h
-│   │
-│   ├── core/
-│   │   ├── Ledger.h
-│   │   ├── Inventory.h
-│   │   └── AccountingEngine.h
-│   │
-│   ├── storage/
-│   │   ├── StorageEngine.h
-│   │   ├── Serializer.h
-│   │   ├── Index.h
-│   │   └── WAL.h
-│   │
-│   ├── audit/
-│   │   └── AuditLog.h
-│   │
-│   └── reports/
-│       └── ReportEngine.h
-│
-├── src/
-│   ├── models/
-│   ├── core/
-│   ├── storage/
-│   ├── audit/
-│   └── reports/
-│
-├── tests/
-│   ├── test_money.cpp
-│   ├── test_account.cpp
-│   ├── test_transaction.cpp
-│   ├── test_ledger.cpp
-│   ├── test_inventory.cpp
-│   ├── test_storage.cpp
-│   ├── test_wal.cpp
-│   └── test_index.cpp
-│
-├── benchmarks/
-│   ├── benchmark_search.cpp
-│   ├── benchmark_transactions.cpp
-│   ├── benchmark_storage.cpp
-│   └── CMakeLists.txt
-│
-├── app/
-│   └── main.cpp
-│
-├── data/
-│   └── .gitkeep
-│
-└── docs/
-```
+These results are hardware and environment dependent and should not be treated as an absolute performance guarantee.
 
 ---
 
